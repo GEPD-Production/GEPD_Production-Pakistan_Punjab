@@ -164,7 +164,12 @@ restore
 }	
 
 
-cap drop m1s0q9__Latitude m1s0q9__Longitude m1s0q9__Accuracy m1s0q9__Altitude m1s0q9__Timestamp m1s0q9__Longitude m1s0q9__Latitude
+loc drop m1s0q9__Latitude m1s0q9__Longitude m1s0q9__Accuracy m1s0q9__Altitude m1s0q9_Altitude  m1s0q9__Timestamp m1s0q9_Timestamp m1s0q9_Longitude m1s0q9_Latitude m1s0q9_Accuracy
+foreach var of local drop{
+      capture drop `var'
+      di in r "return code for: `var': " _rc
+}
+
 
 *--- School land line number and principal mobile number
 br m1saq2 m1saq2b
@@ -345,6 +350,8 @@ foreach var of local drop{
 
 do "${clone}/02_programs/School/Stata/labels.do"
 do "${clone}/02_programs/School/Merge_Teacher_Modules/zz_label_all_variables.do"
+do "${clone}/02_programs/School/Merge_Teacher_Modules/z_value_labels.do"
+
 
 label var district_code "Masked district code"
 label var school_code_maskd"Masked school code"
@@ -462,12 +469,24 @@ foreach var of local order{
 
 
 *--- School geospatial data
-cap drop lat lon
+local drop lat lon
+foreach var of local drop{
+      capture drop `var'
+      di in r "return code for: `var': " _rc
+}
+
+
 
 
 *--- School enrollement (dropping it since already addressed in the school file)
 
-cap drop total_enrolled
+local drop  total_enrolled
+foreach var of local drop{
+      capture drop `var'
+      di in r "return code for: `var': " _rc
+}
+
+
 
 *------------------------------------------------------------------------------*
 *Addressing teachers:
