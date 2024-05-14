@@ -461,6 +461,7 @@ foreach var of local drop{
       di in r "return code for: `var': " _rc
 }
 
+
 local order hashed_school_province district_code school_code_maskd
 foreach var of local order{
       capture order `var'
