@@ -27,7 +27,7 @@ gl save_dir "${processed_dir}//School//Anonymized//"
 * ************* 1- School data *********
 ********************************************************************************
 
-use "${wrk_dir}/school.dta" 
+use "${wrk_dir}/school_Stata.dta" 
 
 *Checking IDs:
 tab school_code, m				//Typically all schools should have an ID
@@ -164,7 +164,12 @@ restore
 }	
 
 
-drop m1s0q9__Latitude m1s0q9__Longitude
+loc drop m1s0q9__Latitude m1s0q9__Longitude m1s0q9__Accuracy m1s0q9__Altitude m1s0q9_Altitude  m1s0q9__Timestamp m1s0q9_Timestamp m1s0q9_Longitude m1s0q9_Latitude m1s0q9_Accuracy
+foreach var of local drop{
+      capture drop `var'
+      di in r "return code for: `var': " _rc
+}
+
 
 *--- School land line number and principal mobile number
 br m1saq2 m1saq2b
@@ -327,11 +332,44 @@ m2saq2__3 m2saq2__4 m2saq2__5 m2saq2__6 m2saq2__7 m2saq2__8 m2saq2__9 m2saq2__10
 m2saq2__12 m2saq2__13 m2saq2__14 m2saq2__15 m2saq2__16 m2saq2__17 m2saq2__18 m2saq2__19 ///
 m2saq2__20 m2saq2__21 m2saq2__22 m2saq2__23 m2saq2__24 m2saq2__25 m2saq2__26 m2saq2__27 ///
 m2saq2__28 m2saq2__29 m7sb_* m3sb_t* m3sb_etri_roster__0 m5sb_* m9saq1 m10s1q1* m10_teacher_name ///
-m1s0q8 m1s0q9__Timestamp interview__id interview__key district tehsil schoollevel shift Date_time location
+m1s0q8 m1s0q9__Timestamp interview__id interview__key district tehsil schoollevel shift Date_time location ///
+modules__2 modules__1 modules__7 modules__3 modules__5 modules__6 modules__4 modules__8 ///
+m2saq1 numEligible i1 i2 i3 i4 i5 available1 available2 available3 available4 available5 ///
+teacher_phone_number1 teacher_phone_number2 teacher_phone_number3 teacher_phone_number4 ///
+teacher_phone_number5 m1s0q6 m1saq2 m1saq2b fillout_teacher_q fillout_teacher_con ///
+fillout_teacher_obs observation_id sssys_irnd has__errors interview__status teacher_etri_list_photo ///
+m5s2q1c_number_new m5s2q1e_number_new m5s1q1f_grammer_new monitoring_inputs_temp monitoring_infrastructure_temp ///
+principal_training_temp school_teacher_ques_INPT
 
 foreach var of local drop{
       capture drop `var'
       di in r "return code for: `var': " _rc
+}
+
+
+
+do "${clone}/02_programs/School/Stata/labels.do"
+do "${clone}/02_programs/School/Merge_Teacher_Modules/zz_label_all_variables.do"
+do "${clone}/02_programs/School/Merge_Teacher_Modules/z_value_labels.do"
+
+
+label var district_code "Masked district code"
+label var school_code_maskd"Masked school code"
+
+order school_code_maskd district_code school_province_preload total_enrolled_c numEligible4th grade5_yesno  m1* m4* subject_test s1* s2*  m5* m6* m7* m8*
+
+
+*--- dropping vars with all missing (no obs)
+
+foreach var of varlist * {
+    capture assert missing(`var')
+    if !_rc codebook `var', compact
+}
+
+
+foreach var of varlist * {
+    capture assert missing(`var')
+    if !_rc drop `var'
 }
 
 
@@ -347,7 +385,7 @@ save "${save_dir}\school.dta", replace
 * ************* 2- Teachers data *********
 ********************************************************************************	
 
-use "${wrk_dir}/teachers.dta" 
+use "${wrk_dir}/teachers_Stata.dta" 
 
 
 *Checking IDs:
@@ -381,7 +419,7 @@ foreach var of local drop{
 }
 
 
-local order hashed_school_code hashed_school_province hashed_school_district school_code school_name_preload district_code
+local order  district_code school_code 
 foreach var of local order{
       capture order `var'
       di in r "return code for: `var': " _rc
@@ -423,6 +461,7 @@ foreach var of local drop{
       di in r "return code for: `var': " _rc
 }
 
+
 local order hashed_school_province district_code school_code_maskd
 foreach var of local order{
       capture order `var'
@@ -431,12 +470,24 @@ foreach var of local order{
 
 
 *--- School geospatial data
-cap drop lat lon
+local drop lat lon
+foreach var of local drop{
+      capture drop `var'
+      di in r "return code for: `var': " _rc
+}
+
+
 
 
 *--- School enrollement (dropping it since already addressed in the school file)
 
-cap drop total_enrolled
+local drop  total_enrolled
+foreach var of local drop{
+      capture drop `var'
+      di in r "return code for: `var': " _rc
+}
+
+
 
 *------------------------------------------------------------------------------*
 *Addressing teachers:
@@ -530,6 +581,17 @@ foreach var of local drop{
 }
 
 
+do "${clone}/02_programs/School/Merge_Teacher_Modules/z_value_labels.do"
+do "${clone}/02_programs/School/Merge_Teacher_Modules/zz_label_all_variables.do"
+do "${clone}/02_programs/School/Stata/labels.do"
+
+
+order district_code school_code_maskd	teachers__id 
+
+label var district_code "Masked district code"
+label var school_code_maskd"Masked school code"
+
+
 
 *--- dropping vars with all missing (no obs)
 
@@ -561,7 +623,7 @@ save "${save_dir}\teachers.dta", replace
 *------------------------------------------------------------------------------*
 *For first grade students
 *------------------------------------------------------------------------------*
-use "${wrk_dir}/first_grade_assessment.dta" 
+use "${wrk_dir}/first_grade_stata.dta" 
 
 
 *Checking IDs:
@@ -620,7 +682,7 @@ save "${save_dir}\first_grade_assessment.dta", replace
 *------------------------------------------------------------------------------*	
 *For fourth grade students
 *------------------------------------------------------------------------------*
-use "${wrk_dir}/fourth_grade_assessment.dta" 
+use "${wrk_dir}/fourth_grade_stata.dta" 
 
 
 
