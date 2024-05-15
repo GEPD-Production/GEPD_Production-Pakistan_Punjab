@@ -236,6 +236,7 @@ merge 1:1 school_code TEACHERS__id using `teach1'
 tab _merge 
 
  
+exit 
 
 br if _merge==2
 drop _merge 
