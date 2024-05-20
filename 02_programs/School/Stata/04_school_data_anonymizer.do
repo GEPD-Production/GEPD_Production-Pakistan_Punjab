@@ -506,7 +506,7 @@ foreach var of local order{
 *------------------------------------------------------------------------------*
 *Addressing Strata varibale (adding the masked variblae extracted previously from the school file):
 *--------------------------------------------
-tab strata
+tab strata 
 
 sort strata
 joinby strata using "${save_dir}\sensetive_masked\strata_info.dta", unmatched(both)
@@ -976,7 +976,7 @@ save "${save_dir}\fourth_grade_assessment.dta", replace
 *-------------------------------------
 log using "${save_dir}\sensetive_masked\QA_anonymization",  name("QA_anonymization") append
 
-use "${wrk_dir}/fourth_grade_Stata.dta" 
+use "${wrk_dir}/fourth_grade_stata.dta" 
 
 di c(filename)
 di c(current_time)
