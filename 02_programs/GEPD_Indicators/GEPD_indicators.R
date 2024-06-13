@@ -99,9 +99,11 @@ indicator_stats <- function(name, indicator, dataset, tag, unit) {
     if (unit == "All") {
       stat_df <- school_dta
     } else if (unit == "Female") {
-      stat_df <- school_dta
+      stat_df <- school_dta %>%
+        filter(m7saq10==2)
     } else if (unit == "Male") {
-      stat_df <- school_dta
+      stat_df <- school_dta %>%
+        filter(m7saq10==1)
     } else if (unit == "Rural") {
       stat_df <- school_dta %>%
         filter(urban_rural == "Rural")
