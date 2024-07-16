@@ -746,8 +746,8 @@ indicators <- list(
 
   c("SE.PRM.ATTD    ", "student_attendance	", "school", "ATTD", "All"),
   c("SE.PRM.ATTD.1  ", "student_attendance	", "school", "ATTD", "All"),
-  c("SE.PRM.ATTD.1.F", "student_attendance	", "school", "ATTD", "Female"),
-  c("SE.PRM.ATTD.1.M", "student_attendance	", "school", "ATTD", "Male"),
+  c("SE.PRM.ATTD.1.F", "student_attendance_female	", "school", "ATTD", "All"),
+  c("SE.PRM.ATTD.1.M", "student_attendance_male	", "school", "ATTD", "All"),
   c("SE.PRM.ATTD.1.R", "student_attendance	", "school", "ATTD", "Rural"),
   c("SE.PRM.ATTD.1.U", "student_attendance	", "school", "ATTD", "Urban"),
 
@@ -914,9 +914,9 @@ indicators <- list(
   # (De Facto) Pe,rcent of teachers that report salary delays in the past 12 months
   c("SE.PRM.TATT.8 ", "100*m3seq6_tatt		", "teacher_questionnaire", "TATT", "All"),
   # (De Facto) Po,licy Lever (Teaching) - Attraction
-  c("SE.PRM.TATT.DF", "teacher_attraction", "policy_survey", "NA", "NA"),
+  c("SE.PRM.TATT.DJ", "teacher_attraction", "policy_survey", "NA", "NA"),
   # (De Jure) Pol,icy Lever (Teaching) - Attraction
-  c("SE.PRM.TATT.DJ", "teacher_attraction		", "teacher_questionnaire", "TATT", "All"),
+  c("SE.PRM.TATT.DF", "teacher_attraction		", "teacher_questionnaire", "TATT", "All"),
 
 
   #######################################
