@@ -99,6 +99,10 @@ destring school_code, force replace
 * DATA ENTRY ERROR in entering school code:
 drop if missing(school_code)
 
+* Comment_AR: Fix the problematic observation that came as a result of the module check: Fixing the error in school_code: 35110050
+
+drop if interview__id == "121e7ad406b34e8fb32df50b0e99736f"
+
 
 
 frlink m:1 school_code, frame(weights)
