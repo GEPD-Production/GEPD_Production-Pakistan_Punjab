@@ -1617,6 +1617,9 @@ frame change school
 
 *Format school code:
 format school_code %12.0f
+
+isid school_code
+
 save "$save_dir/school_Stata.dta", replace
 ********************************************************************************
 
@@ -1624,6 +1627,8 @@ frame change teachers
 
 *Format school code:
 format school_code %12.0f
+
+isid school_code teachers_id
 save "$save_dir/teachers_Stata.dta", replace
 ********************************************************************************
 
@@ -1632,6 +1637,9 @@ frame change fourth_grade_assessment
 *Format school code:
 format school_code %12.0f
 
+drop if school_code ==. 
+
+isid school_code fourth_grade_assessment__id
 save "$save_dir/fourth_grade_Stata.dta", replace
 ********************************************************************************
 
@@ -1640,6 +1648,7 @@ frame change first_grade_assessment
 *Format school code:
 format school_code %12.0f
 
+isid school_code ecd_assessment__id
 save "$save_dir/first_grade_Stata.dta", replace
 
 ****************************************************************************END**************************************************************************************************

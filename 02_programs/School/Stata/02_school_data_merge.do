@@ -304,6 +304,7 @@ gen g4_stud_weight=g4_class_weight*g4_stud_weight_temp
 
 save "${processed_dir}\\School\\Confidential\\Merged\\fourth_grade_assessment.dta" , replace
 
+
 ***************
 ***************
 * Collapse school data file to be unique at school_code level
