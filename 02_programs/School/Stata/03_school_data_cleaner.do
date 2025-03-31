@@ -1057,9 +1057,10 @@ svy: mean drinking_water functioning_toilet internet class_electricity disabilit
 
 frame change school
 
-gen vignette_1_resp = cond(m7sbq1_opmn==0 & (m7sbq4_opmn==4 | m7sbq4_opmn==98),0,0.5,.)
+gen vignette_1_resp = cond((m7sbq1_opmn==0 | m7sbq1_opmn == 98) & (m7sbq4_opmn==4 | m7sbq4_opmn==98),0,0.5,.)
 replace vignette_1_resp=. if missing(m7sbq1_opmn) & missing(m7sbq1_opmn)
-replace vignette_1_resp = 0.5 if !m7sbq1_opmn==0 & (m7sbq4_opmn==4 | m7sbq4_opmn==98)
+replace vignette_1_resp = 0.5 if !(m7sbq1_opmn==0 | m7sbq1_opmn == 98) & (m7sbq4_opmn==4 | m7sbq4_opmn==98)
+
 gen vignette_1_finance= 0.5 if m7sbq2_opmn==1
 replace vignette_1_finance = 0.25 if (m7sbq2_opmn==2 | m7sbq2_opmn==97)
 replace vignette_1_finance = 0 if m7sbq2_opmn==3
@@ -1077,9 +1078,11 @@ gen vignette_1 = vignette_1_resp + vignette_1_finance + vignette_1_address
 *  // no one responsible that is known
 gen vignette_2_resp = 0 if m7scq1_opmn==98
 replace vignette_2_resp = 0.5 if m7scq1_opmn!=98 &!missing(m7scq1_opmn)
+
 * //parents are forced to buy textbooks 
-gen vignette_2_finance = 0 if m7scq1_opmn==1
-replace vignette_2_finance = 0.5 if m7scq1_opmn!=1 & !missing(m7scq1_opmn)
+gen vignette_2_finance = 0 if m7scq1_opmn==1 | m7scq1_opmn == 98
+replace vignette_2_finance = 0.5 if !(m7scq1_opmn==1 | m7scq1_opmn == 98) & !missing(m7scq1_opmn)
+
 *Give partial credit based on how quickly it will be solved <1 month, 1-3, 3-6, 6-12, >1 yr
 gen vignette_2_address = 1 if m7scq2_opmn==1
 replace vignette_2_address = .75 if m7scq2_opmn==2
