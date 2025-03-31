@@ -97,11 +97,11 @@ SE.PRM.ILDR.6.F,(De Facto) Percent of teachers reporting that they were provided
 SE.PRM.ILDR.6.M,(De Facto) Percent of teachers reporting that they were provided with feedback in that discussion - Male,Global Education Policy Dashboard,World Bank,NA
 SE.PRM.ILDR.6.R,(De Facto) Percent of teachers reporting that they were provided with feedback in that discussion - Rural,Global Education Policy Dashboard,World Bank,NA
 SE.PRM.ILDR.6.U,(De Facto) Percent of teachers reporting that they were provided with feedback in that discussion - Urban,Global Education Policy Dashboard,World Bank,NA
-SE.PRM.ILDR.7,(De Facto) Percent of teachers reporting having lesson plans,Global Education Policy Dashboard,World Bank,NA
-SE.PRM.ILDR.7.F,(De Facto) Percent of teachers reporting having lesson plans - Female,Global Education Policy Dashboard,World Bank,NA
-SE.PRM.ILDR.7.M,(De Facto) Percent of teachers reporting having lesson plans - Male,Global Education Policy Dashboard,World Bank,NA
-SE.PRM.ILDR.7.R,(De Facto) Percent of teachers reporting having lesson plans - Rural,Global Education Policy Dashboard,World Bank,NA
-SE.PRM.ILDR.7.U,(De Facto) Percent of teachers reporting having lesson plans - Urban,Global Education Policy Dashboard,World Bank,NA
+SE.PRM.ILDR.7,(De Facto) Percent of teachers reporting not having lesson plans,Global Education Policy Dashboard,World Bank,NA
+SE.PRM.ILDR.7.F,(De Facto) Percent of teachers reporting not having lesson plans - Female,Global Education Policy Dashboard,World Bank,NA
+SE.PRM.ILDR.7.M,(De Facto) Percent of teachers reporting not having lesson plans - Male,Global Education Policy Dashboard,World Bank,NA
+SE.PRM.ILDR.7.R,(De Facto) Percent of teachers reporting not having lesson plans - Rural,Global Education Policy Dashboard,World Bank,NA
+SE.PRM.ILDR.7.U,(De Facto) Percent of teachers reporting not having lesson plans - Urban,Global Education Policy Dashboard,World Bank,NA
 SE.PRM.ILDR.8,"(De Facto) Percent of teachers reporting that they had discussed their lesson plans with someone else (pricinpal, pedagogical coordinator, another teacher)",Global Education Policy Dashboard,World Bank,NA
 SE.PRM.ILDR.8.F,"(De Facto) Percent of teachers reporting that they had discussed their lesson plans with someone else (pricinpal, pedagogical coordinator, another teacher) - Female",Global Education Policy Dashboard,World Bank,NA
 SE.PRM.ILDR.8.M,"(De Facto) Percent of teachers reporting that they had discussed their lesson plans with someone else (pricinpal, pedagogical coordinator, another teacher) - Male",Global Education Policy Dashboard,World Bank,NA
