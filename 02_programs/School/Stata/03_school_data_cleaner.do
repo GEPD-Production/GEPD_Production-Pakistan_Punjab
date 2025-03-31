@@ -1827,6 +1827,10 @@ local intrinsic_motiv_q_rev m3scq1_tinm m3scq2_tinm m3scq3_tinm m3scq4_tinm m3sc
 local intrinsic_motiv_q m3scq11_tinm m3scq14_tinm
 local intrinsic_motiv_q_all m3scq1_tinm m3scq2_tinm m3scq3_tinm m3scq4_tinm m3scq5_tinm m3scq6_tinm m3scq7_tinm m3scq10_tinm m3scq11_tinm m3scq14_tinm
 
+foreach v of varlist m3scq*_tinm {
+ 	replace `v' = . if `v' == 99
+ }
+ 
 *(De Facto) Percent of teachers that agree or strongly agrees with It is acceptable for a teacher to be absent if the ~
 gen SE_PRM_TINM_1 = 0 if m3scq1_tinm<3 & !missing(m3scq1_tinm)
 replace SE_PRM_TINM_1 = 100 if m3scq1_tinm>=3 & !missing(m3scq1_tinm)
