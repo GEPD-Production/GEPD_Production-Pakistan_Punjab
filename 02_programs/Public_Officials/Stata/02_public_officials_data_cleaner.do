@@ -57,18 +57,30 @@ foreach var in `r(varlist)' {
 	gen scored_`var'=`var'
 }
 
+
 *reverse code some indicaotrs so 5 is best and 1 is worst
-local intrinsic_motiv_q_rev scored_QB2q2 scored_QB4q4a scored_QB4q4b scored_QB4q4c scored_QB4q4d scored_QB4q4e scored_QB4q4f scored_QB4q4g scored_IDM1q1 scored_IDM1q2
+local intrinsic_motiv_q_rev scored_QB4q4a scored_QB4q4b scored_QB4q4c scored_QB4q4d scored_QB4q4e scored_QB4q4f scored_QB4q4g scored_IDM1q1 scored_IDM1q2
+ 
+ gen score_temp = .
+ replace score_temp = 1 if scored_QB2q2 == 5
+ replace score_temp = 2 if scored_QB2q2 == 4
+ replace score_temp = 3 if scored_QB2q2 == 3
+ replace score_temp = 4 if scored_QB2q2 == 2
+ replace score_temp = 5 if scored_QB2q2 == 1
+ replace score_temp = . if inlist(scored_QB2q2, 900, 998)
+ replace scored_QB2q2 = score_temp
+ drop score_temp
+
 
 foreach var in `intrinsic_motiv_q_rev' {
-gen score_temp=.
-replace score_temp = 1 if `var'==4
-replace score_temp = 2.33 if `var'==3
-replace score_temp = 3.67 if `var'==2
-replace score_temp = 5 if `var'==1
-replace score_temp = . if `var'==99
-replace `var'=score_temp
-drop score_temp
+	gen score_temp=.
+ 	replace score_temp = 1 if `var'==5
+ 	replace score_temp = 2.33 if `var'==4
+ 	replace score_temp = 3.67 if `var'==2
+ 	replace score_temp = 5 if `var'==1
+ 	replace score_temp = . if `var'==99
+ 	replace `var'=score_temp
+ 	drop score_temp
 }
 
 de scored_NLG* scored_ACM* scored_QB* scored_IDM* scored_ORG*, varlist
