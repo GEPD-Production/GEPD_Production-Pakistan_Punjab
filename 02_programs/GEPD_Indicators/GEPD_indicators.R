@@ -1031,11 +1031,11 @@ indicators <- list(
 
   c("SE.PRM.ISTD    ", " standards_monitoring		", "school", "ISTD", "All"), # Policy Lever (Inputs & Infrastructure) - Standards
   c("SE.PRM.ISTD.1", "textbook_policy", "policy_survey", "NA", "NA"), # (De Jure) Is there a policy in place to require that students have access to the prescribed textbooks?
-  c("SE.PRM.ISTD.10 ", " 100*m1scq14_imon__4		", "school", "ISTD", "All"), # (De Facto) Do you know if there is a policy in place to require that schools have access to drinking water?
+  c("SE.PRM.ISTD.10 ", " 100*m1scq14_imon__3		", "school", "ISTD", "All"), # (De Facto) Do you know if there is a policy in place to require that schools have access to drinking water?
   c("SE.PRM.ISTD.11", "toilet_policy", "policy_survey", "NA", "NA"), # (De Jure) Is there a policy in place to require that schools have functioning toilets?
   c("SE.PRM.ISTD.12 ", " 100*m1scq14_imon__1		", "school", "ISTD", "All"), # (De Facto) Do you know if there is a policy in place to require that schools have functioning toilets?
   c("SE.PRM.ISTD.13", "disability_policy", "policy_survey", "NA", "NA"), # (De Jure) Is there a policy in place to require that schools are accessible to children with special needs?
-  c("SE.PRM.ISTD.14 ", " 100*m1scq14_imon__3		", "school", "ISTD", "All"), # (De Facto) Do you know if there is there a policy in place to require that schools are accessible to children with speci~
+  c("SE.PRM.ISTD.14 ", " 100*m1scq14_imon__4		", "school", "ISTD", "All"), # (De Facto) Do you know if there is there a policy in place to require that schools are accessible to children with speci~
   c("SE.PRM.ISTD.2  ", " 100*m1scq13_imon__2		", "school", "ISTD", "All"), # (De Facto) Do you know if there is a policy in place to require that students have access to the prescribed textbooks?
   c("SE.PRM.ISTD.3", "connectivity_program", "policy_survey", "NA", "NA"), # (De Jure) Is there a national connectivity program?
   c("SE.PRM.ISTD.4", "as.numeric(NA)", "policy_survey", "NA", "NA"), # (De Facto) Do you know if there is a national connectivity program?
