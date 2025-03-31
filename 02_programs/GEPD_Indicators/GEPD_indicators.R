@@ -1184,13 +1184,13 @@ indicators <- list(
 
   c("SE.PRM.SSLD    ", " sch_selection_deployment		", "school", "SSLD", "All"), # Policy Lever (School Management) - Selection & Deployment
   c("SE.PRM.SSLD.1", "principal_rubric", "policy_survey", "NA", "NA"), # (De Jure) Is there a systematic approach/rubric for the selection of principals?
-  c("SE.PRM.SSLD.10 ", " 100*m7sgq2_ssld==1		", "school", "SSLD", "All"), # (De Facto) Percent of principals that report that the most important factor considered when selecting a principal is yea~
-  c("SE.PRM.SSLD.11 ", " 100*m7sgq2_ssld==2		", "school", "SSLD", "All"), # (De Facto) Percent of principals that report that the most important factor considered when selecting a principal is qua~
-  c("SE.PRM.SSLD.12 ", " 100*m7sgq2_ssld==3		", "school", "SSLD", "All"), # (De Facto) Percent of principals that report that the most important factor considered when selecting a principal is dem~
-  c("SE.PRM.SSLD.13 ", " 100*m7sgq2_ssld==4		", "school", "SSLD", "All"), # (De Facto) Percent of principals that report that the most important factor considered when selecting a principal is hav~
-  c("SE.PRM.SSLD.14 ", " 100*m7sgq2_ssld==6		", "school", "SSLD", "All"), # (De Facto) Percent of principals that report that the most important factor considered when selecting a principal is pol~
-  c("SE.PRM.SSLD.15 ", " 100*m7sgq2_ssld==7		", "school", "SSLD", "All"), # (De Facto) Percent of principals that report that the most important factor considered when selecting a principal is eth~
-  c("SE.PRM.SSLD.16 ", " 100*m7sgq2_ssld==8		", "school", "SSLD", "All"), # (De Facto) Percent of principals that report that the most important factor considered when selecting a principal is kno~
+  c("SE.PRM.SSLD.10 ", " 100*(m7sgq2_ssld==1)		", "school", "SSLD", "All"), # (De Facto) Percent of principals that report that the most important factor considered when selecting a principal is yea~
+  c("SE.PRM.SSLD.11 ", " 100*(m7sgq2_ssld==2)		", "school", "SSLD", "All"), # (De Facto) Percent of principals that report that the most important factor considered when selecting a principal is qua~
+  c("SE.PRM.SSLD.12 ", " 100*(m7sgq2_ssld==3)		", "school", "SSLD", "All"), # (De Facto) Percent of principals that report that the most important factor considered when selecting a principal is dem~
+  c("SE.PRM.SSLD.13 ", " 100*(m7sgq2_ssld==4)		", "school", "SSLD", "All"), # (De Facto) Percent of principals that report that the most important factor considered when selecting a principal is hav~
+  c("SE.PRM.SSLD.14 ", " 100*(m7sgq2_ssld==6)		", "school", "SSLD", "All"), # (De Facto) Percent of principals that report that the most important factor considered when selecting a principal is pol~
+  c("SE.PRM.SSLD.15 ", " 100*(m7sgq2_ssld==7)		", "school", "SSLD", "All"), # (De Facto) Percent of principals that report that the most important factor considered when selecting a principal is eth~
+  c("SE.PRM.SSLD.16 ", " 100*(m7sgq2_ssld==8)		", "school", "SSLD", "All"), # (De Facto) Percent of principals that report that the most important factor considered when selecting a principal is kno~
   c("SE.PRM.SSLD.2", "principal_factors", "policy_survey", "NA", "NA"), # (De Jure) How are the principals selected? Based on the requirements, is the selection system meritocratic?
   c("SE.PRM.SSLD.3  ", " 100*m7sgq1_ssld__1		", "school", "SSLD", "All"), # (De Facto) Percent of principals that report that the factors considered when selecting a principal include years of exp~
   c("SE.PRM.SSLD.4  ", " 100*m7sgq1_ssld__2		", "school", "SSLD", "All"), # (De Facto)  Percent of principals that report that the factors considered when selecting a principal include quality of ~
