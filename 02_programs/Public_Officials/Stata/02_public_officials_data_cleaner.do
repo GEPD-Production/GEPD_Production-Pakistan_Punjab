@@ -100,9 +100,10 @@ replace scored_temp = 5 if abs(QB1q2-$class_size)/$class_size<=0.1 // between 0-
 replace scored_temp = 4 if abs(QB1q2-$class_size)/$class_size>0.1 & abs(QB1q2-$class_size)/$class_size<=0.2 // between 10-20% of actual value gets 4 points
 replace scored_temp = 3 if abs(QB1q2-$class_size)/$class_size>0.2 & abs(QB1q2-$class_size)/$class_size<=0.3 // between 20-30% of actual value gets 3 points
 replace scored_temp = 2 if abs(QB1q2-$class_size)/$class_size>0.3 & abs(QB1q2-$class_size)/$class_size<=0.4 // between 30-40% of actual value gets 2 points
-replace scored_temp = 1 if abs(QB1q2-$class_size)/$class_size>0.4 & abs(QB1q2-$class_size)/$class_size<=1 // between 40-10% of actual value gets 1 points
+replace scored_temp = 1 if abs(QB1q2-$class_size)/$class_size>0.4 & !inlist(QB1q2, 900, 998) & !missing(QB1q2) // between 40-10% of actual value gets 1 points
 replace scored_QB1q2=scored_temp
 drop scored_temp
+
 
 * QB1q1
 gen scored_temp=.
@@ -110,7 +111,7 @@ replace scored_temp = 5 if abs(QB1q1-$teacher_absence)/$teacher_absence <=0.1 //
 replace scored_temp = 4 if abs(QB1q1-$teacher_absence)/$teacher_absence >0.1 & abs(QB1q1-$teacher_absence)/$teacher_absence <=0.2 // between 10-20% of actual value gets 4 points
 replace scored_temp = 3 if abs(QB1q1-$teacher_absence)/$teacher_absence >0.2 & abs(QB1q1-$teacher_absence)/$teacher_absence <=0.3 // between 20-30% of actual value gets 3 points
 replace scored_temp = 2 if abs(QB1q1-$teacher_absence)/$teacher_absence >0.3 & abs(QB1q1-$teacher_absence)/$teacher_absence <=0.4 // between 30-40% of actual value gets 2 points
-replace scored_temp = 1 if abs(QB1q1-$teacher_absence)/$teacher_absence >0.4 & abs(QB1q1-$teacher_absence)/$teacher_absence <=1 // between 40-10% of actual value gets 1 points
+replace scored_temp = 1 if abs(QB1q1-$teacher_absence)/$teacher_absence >0.4 & !inlist(QB1q1, 900, 998) & !missing(QB1q1) // between 40-10% of actual value gets 1 points
 replace scored_QB1q1=scored_temp
 drop scored_temp
 
