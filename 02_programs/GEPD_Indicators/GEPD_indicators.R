@@ -1209,7 +1209,7 @@ indicators <- list(
   c("SE.PRM.SSUP    ", " sch_support		", "school", "SSUP", "All"), # Policy Lever (School Management) - Support
   c("SE.PRM.SSUP.1", "principal_training_required", "policy_survey", "NA", "NA"), # (De Jure) Are principals required to have training on how to manage a school?
   c("SE.PRM.SSUP.10 ", " 100*m7sgq5_ssup		", "school", "SSUP", "All"), # (De Facto) Percent of principals that report having used the skills they gained at the last training they attended
-  c("SE.PRM.SSUP.11 ", " m7sgq7_ssup		", "school", "SSUP", "All"), # (De Facto) Average number of trainings that principals report having been offered to them in the past year
+  c("SE.PRM.SSUP.11 ", " 100*principal_offered		", "school", "SSUP", "All"), # (De Facto) Percent of principals receiving 1 or more trainings in the past year
   c("SE.PRM.SSUP.2", "principal_training_type1", "policy_survey", "NA", "NA"), # (De Jure) Are principals required to have management training for new principals?
   c("SE.PRM.SSUP.3", "principal_training_type2", "policy_survey", "NA", "NA"), # (De Jure) Are principals required to have in-service training?
   c("SE.PRM.SSUP.4", "principal_training_type3", "policy_survey", "NA", "NA"), # (De Jure) Are principals required to have mentoring/coaching by experienced principals?
