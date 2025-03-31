@@ -78,22 +78,24 @@ frame change teachers
 
 *Generate school absence variable
 gen sch_absence_rate = 0 if (m2sbq6_efft!=6) & !missing(m2sbq6_efft)
-replace sch_absence_rate = 1 if (m2sbq6_efft==6 | teacher_available==2) & !missing(m2sbq6_efft)
+replace sch_absence_rate = 1 if (m2sbq6_efft==6 | (teacher_available==2 & !inlist(m2sbq6_efft, 1, 2, 3, 4, 5))) & !missing(m2sbq6_efft)
 replace sch_absence_rate = 100*sch_absence_rate
 *generate absence variables
 gen absence_rate = 0 if ((m2sbq6_efft==1 | m2sbq6_efft==3 | m2sbq6_efft==2 | m2sbq6_efft==4)) & !missing(m2sbq6_efft)
-replace absence_rate = 100 if (m2sbq6_efft==6 | m2sbq6_efft==5 | teacher_available==2) & !missing(m2sbq6_efft)
+replace absence_rate = 100 if (m2sbq6_efft==6 | m2sbq6_efft==5 | (teacher_available==2 & !inlist(m2sbq6_efft, 1, 2, 3, 4))) & !missing(m2sbq6_efft)
 
 *generate principal absence_rate
 gen principal_absence = 0 if m2sbq3_efft!=8 & !missing(m2sbq3_efft)
 replace principal_absence = 100 if m2sbq3_efft==8 & !missing(m2sbq3_efft)
 
 *Fix absence rates, where in some cases the principal is the only one they could assess for absence (1 room schools type of situation?)
-replace absence_rate = principal_absence if missing(absence_rate)
-replace sch_absence_rate = principal_absence if missing(sch_absence_rate)
-*Generating teacher presence rate- whether in school or classroom
+bysort school_code: egen count = count( m2sbq6_efft ) // number of teachers in the school where we actually collected this information
+ 
+replace absence_rate = principal_absence if count == 0 
+replace sch_absence_rate = principal_absence if count == 0
 gen presence_rate = 100-absence_rate
 
+drop count
 
 svyset school_code, strata(strata) singleunit(scaled) weight(school_weight)   || teachers_id, weight(teacher_abs_weight)
 svy: mean absence_rate
