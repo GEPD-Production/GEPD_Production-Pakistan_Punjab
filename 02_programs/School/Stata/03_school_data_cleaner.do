@@ -515,28 +515,275 @@ bin_var m8saq7i_gir 4
 bin_var m8saq7j_gir 1
 bin_var m8saq7k_gir 3
 
-* Grade lonely giraffe question
-* This part is not clear in Stata, as Stata does not have a group_by equivalent
 
-* Call out scorer
-qui ds m8saq2_id* m8saq3_id* m8sbq1_number_sense*
-foreach var in `r(varlist)' {
-    call_out_scorer `"`var'"' 0.8
+*grade circling questions
+tempfile complete
+save `complete'
+
+foreach v in m8saq2_id m8saq3_id m8sbq1_number_sense {
+	
+	*number of letters/words/numbers circled by each student
+	egen number_`v' = rowtotal(`v'__1 `v'__2 `v'__3 `v'__4 `v'__5 `v'__6 `v'__7 `v'__8 `v'__9)
+
+	*address the cases of no response to make sure that those marked as no response is marked as 0 if we have 1 in other options
+	forvalues i = 1/9 {
+		replace `v'__99 = 0 if `v'__`i' == 1
+	}
 }
 
-* Subtract some letters not assessed and make out of 3 points
-egen m8saq2_id = rowtotal(m8saq2_id*) , missing
-replace m8saq2_id = (m8saq2_id - 7) / 3
-egen m8saq3_id = rowtotal(m8saq3_id*) , missing
-replace m8saq3_id = (m8saq3_id - 7) / 3
+*also generate a dummy if the letters from the manual were circled
+*h, F, v letters (3, 4, 6), respect (2), 4, 23, 55 numbers (1, 3, 4). Note that PAK only has one word!
+gen number_m8saq2_id_cor = 1 if m8saq2_id__3 == 1 & m8saq2_id__4 == 1 & m8saq2_id__6 == 1 & number_m8saq2_id == 3
+gen number_m8saq3_id_cor = 1 if m8saq3_id__2 == 1 & number_m8saq3_id == 1
+gen number_m8sbq1_number_sense_cor = 1 if m8sbq1_number_sense__1 == 1 & m8sbq1_number_sense__3 == 1 & m8sbq1_number_sense__4 == 1 & number_m8sbq1_number_sense == 3
 
-* More recoding
-replace m8saq2_id = 0 if m8saq2_id < 0
-replace m8saq3_id = 0 if m8saq3_id < 0
 
-* Recode m8saq2_id and m8saq3_id to be 1 if greater than 1, otherwise keep the same
-replace m8saq2_id = 1 if m8saq2_id > 1
-replace m8saq3_id = 1 if m8saq3_id > 1
+*do the following check: (i) if the number of correct (according to the manual) is >= 50% OR if the number of students circling three letters is 50%, then do not drop this question from grading. 
+foreach v in m8saq2_id m8saq3_id m8sbq1_number_sense {
+	replace number_`v'_cor = 0 if number_`v'_cor != 1 & number_`v' != . 
+	
+	*now check the mean for each of them 
+	sum number_`v'_cor
+	local mean_`v' = `r(mean)'
+}
+
+	
+	if (`mean_m8saq2_id' >= 0.5) & (`mean_m8saq3_id' >= 0.5) & (`mean_m8sbq1_number_sense' >= 0.5) {
+		
+		preserve
+			keep school_code fourth_grade_assessment__id m8saq2_id* m8saq3_id* m8sbq1_number_sense* number_*
+			
+			*gen share of responses for each of the letters/words/numbers
+			foreach v in m8saq2_id m8saq3_id m8sbq1_number_sense {
+				forvalues i = 1/9 {
+					bysort school_code: egen count_`v'_`i' = count(`v'__`i')
+					bysort school_code: egen total_`v'_`i' = sum(`v'__`i')
+					gen share_`v'_`i' = total_`v'_`i' / count_`v'_`i'
+					
+					drop total_`v'_`i' count_`v'_`i'
+				}
+			}
+				
+				tempfile student
+				save `student'
+				
+		restore
+				
+                *move to a school level 
+				preserve 
+					use `student', clear
+					keep school_code share_m8saq2_id_* share_m8saq3_id_* share_m8sbq1_number_sense_*
+					
+					duplicates drop
+					
+					reshape long share_m8saq2_id_ share_m8saq3_id_ share_m8sbq1_number_sense_, i(school_code)
+					
+					rename share_m8saq2_id_ share_letter
+					rename share_m8saq3_id_ share_word
+					rename share_m8sbq1_number_sense_ share_number
+					
+					*mark all above 80% in two separare categories -- the first category is the one for the letters/words/numbers that correspond to the manual and the second one is for those that do not.  (*h, F, v letters (3, 4, 6), respect, greet and fruit words (2, 6, 7), 4, 23, 55 numbers (1, 3, 4))
+					gen letter_manual = 1 if share_letter >= 0.8 & inlist(_j, 3, 4, 6)
+					gen letter_not_manual = 1 if share_letter >= 0.8 & !inlist(_j, 3, 4, 6)
+					gen word_manual = 1 if share_word >= 0.8 & inlist(_j, 2)
+					gen word_not_manual = 1 if share_word >= 0.8 & !inlist(_j, 2)
+					
+					gen number_manual = 1 if share_number >= 0.8 & inlist(_j, 1, 3, 4)
+					gen number_not_manual = 1 if share_number >= 0.8 & !inlist(_j, 1, 3, 4)
+					
+					*also get the total number of letters/words/numbers with more than 0.8% circles
+					foreach v in letter word number {
+						bysort school_code: egen above80_`v' = count(share_`v') if share_`v' >= 0.8
+						bysort school_code: egen count_above80_`v' = max(above80_`v')
+						drop above80_`v'
+					}
+					
+					*SOLUTION 1: the schools where the count of above 80 is 3 and the number of letters from the manual is three are the perfect case, tag those. In PAK, words should be == 1
+					foreach v in letter number {
+						bysort school_code: egen total_`v'_manual = sum(`v'_manual)
+						
+						gen perfect_match_`v' = 1 if total_`v'_manual == 3 & count_above80_`v' == 3
+					}
+					
+					bysort school_code: egen total_word_manual = sum(word_manual)
+					gen perfect_match_word = 1 if total_word_manual == 1 & count_above80_word == 1
+					
+					*now get the top 3 shares for each school, just to see if in the cases of 1 and 2 letters, one of the letters from the manual is the second and the third in the rank 
+					*for letters words and numbers, create a dummy variable for sorting that will help in case of ties
+					gen letter = 1 if inlist(_j, 3, 4, 6)
+					gen word = 1 if inlist(_j, 2)
+					gen number = 1 if inlist(_j, 1, 3, 4)
+					
+					foreach v in letter word number {
+						gsort school_code -share_`v'  `v'
+						bysort school_code: gen rank_`v' = _n
+					}
+					
+					*for each school, gen the list of the three most circled ones. Just one for the word
+					foreach v in letter number {
+						forvalues i = 1/9 {
+							gen `v'_top_`i' = 1 if _j == `i' & inlist(rank_`v', 1, 2, 3)
+						}
+					}
+					
+					forvalues i = 1/9 {
+						gen word_top_`i' = 1 if _j == `i' & inlist(rank_word, 1)
+					}
+				
+					*something that we will use in the future is the tag of complicated schools, get them here
+					foreach v in letter word number {
+						bysort school_code: egen school_`v'_complicated = max(`v'_not_manual)
+					}										
+					
+					keep school_code rank* _j count_above* *complicated* *top* *manual* share* perfect_match*
+			
+					
+					*reshape to long
+					reshape long letter_top_ word_top_ number_top_, i(school_code _j) j(j_new)
+					drop if _j != j_new
+					
+					*SOLUTION 2: the schools where the count of above 80 is below 3 or == 3 but the letters from the manual are among the first ranked ones (should we have any threshold here?)  (*h, F, v letters (3, 4, 6), respect (2), 4, 23, 55 numbers (1, 3, 4))
+					gen top_letter_manual_match = 1 if (_j == 3 & letter_top_ == 1) | (_j == 4 & letter_top_ == 1) | (_j == 6 & letter_top_ == 1) 
+					gen top_word_manual_match = 1 if (_j == 2 & word_top_ == 1) 
+					gen top_number_manual_match = 1 if (_j == 1 & number_top_ == 1) | (_j == 3 & number_top_ == 1) | (_j == 4 & number_top_ ==1)
+					
+					foreach v in letter number {
+						bysort school_code: egen ttl_top_`v'_manual_match = sum(top_`v'_manual_match)
+						gen second_match_`v' = 1 if (count_above80_`v' <= 3 | count_above80_`v' == .)  & ttl_top_`v'_manual_match == 3 & perfect_match_`v' != 1
+					}
+					
+					bysort school_code: egen ttl_top_word_manual_match = sum(top_word_manual_match)
+					gen second_match_word = 1 if (count_above80_word == .) & ttl_top_word_manual_match == 1 & perfect_match_word != 1
+					
+					
+					*SOLUTION 3:
+					*schools with letters/words/numbers that have more than 80% but at least one letter is not on the manual
+					foreach v in letter word number {
+						forvalues i = 1/9 {
+							gen `v'_compl_list_`i' = `i' if _j == `i' & share_`v' >= 0.8 & school_`v'_complicated == 1
+							
+							bysort school_code: egen `v'_complicated_list_`i' = max( `v'_compl_list_`i')
+						}
+						
+						*create the count of the letters from the list to tag the schools that have less than 3
+						egen `v'_complicated_list_ttl = rownonmiss(`v'_complicated_list_*)
+						
+						*for schools that do only have 1 or two letters on the list, go with the ranking for now 
+						if "`v'" != "word" {
+						forvalues i = 1/9 {
+							drop `v'_complicated_list_`i'
+							replace `v'_compl_list_`i' = `i' if  _j == `i' & rank_`v' == 2 & `v'_complicated_list_ttl == 1
+							replace `v'_compl_list_`i' = `i' if  _j == `i' & rank_`v' == 3 & (`v'_complicated_list_ttl == 1 | `v'_complicated_list_ttl == 2)
+							bysort school_code: egen `v'_complicated_list_`i' = max( `v'_compl_list_`i')
+						}
+						}
+						
+						*get a list of the letters that were called out
+						gen `v'_complicated_list = ""
+						
+						forvalues i = 1/9 {
+							replace `v'_complicated_list = `v'_complicated_list + "`i', " if `v'_complicated_list_`i' != .
+							drop `v'_complicated_list_`i' `v'_compl_list_`i'
+						}
+					}
+					
+					keep school_code perfect_match_* second_match_* *_complicated_list school_*_complicated
+					
+					duplicates drop 
+					tempfile school
+					save `school'
+				restore
+				
+				*now apply this school level information to the student level data
+				use `student', clear
+				
+				merge m:1 school_code using `school', nogen
+				
+				*SCORE!!! when we have a perfect match or a second perfect match, then assign 
+				
+				*go with the schools with perfect matches and second matches (first for letters)
+				*score the ones from the manual
+				foreach v in 3 4 6 {
+					gen score_letter_`v' = 1 if m8saq2_id__`v' == 1 & (perfect_match_letter == 1 | second_match_letter == 1)
+					replace score_letter_`v' = 0 if  m8saq2_id__`v' == 0 & (perfect_match_letter == 1 | second_match_letter == 1)
+				}
+				
+				*then the ones that are not on the manual 
+				foreach v in 1 2 5 7 8 9 {
+					gen score_letter_`v' = 1 if m8saq2_id__`v' == 0 & (perfect_match_letter == 1 | second_match_letter == 1)
+					replace score_letter_`v' = 0 if m8saq2_id__`v' == 1 & (perfect_match_letter == 1 | second_match_letter == 1)
+				}
+				
+				*now do the same for words RESPECT only for PAK
+				*score the ones from the manual
+				foreach v in 2  {
+					gen score_word_`v' = 1 if m8saq3_id__`v' == 1 & (perfect_match_word == 1 | second_match_word == 1)
+					replace score_word_`v' = 0 if  m8saq3_id__`v' == 0 & (perfect_match_word == 1 | second_match_word == 1)
+				}
+				
+				*then the ones that are not on the manual 
+				foreach v in 1 3 4 5 6 7 8 9 {
+					gen score_word_`v' = 1 if m8saq3_id__`v' == 0 & (perfect_match_word == 1 | second_match_word == 1)
+					replace score_word_`v' = 0 if m8saq3_id__`v' == 1 & (perfect_match_word == 1 | second_match_word == 1)
+				}
+				
+				*same thing for the numbers 
+				foreach v in 1 3 4 {
+					gen score_number_`v' = 1 if m8sbq1_number_sense__`v' == 1 & (perfect_match_number == 1 | second_match_number == 1)
+					replace score_number_`v' = 0 if  m8sbq1_number_sense__`v' == 0 & (perfect_match_number == 1 | second_match_number == 1)
+				}
+				
+				*then the ones that are not on the manual 
+				foreach v in 2 5 6 7 8 9 {
+					gen score_number_`v' = 1 if m8sbq1_number_sense__`v' == 0 & (perfect_match_number == 1 | second_match_number == 1)
+					replace score_number_`v' = 0 if m8sbq1_number_sense__`v' == 1 & (perfect_match_number == 1 | second_match_number == 1)
+				}
+				
+				foreach v in m8saq2_id m8saq3_id m8sbq1_number_sense {
+					if "`v'" == "m8saq2_id" {
+						local type letter
+					}
+					if "`v'" == "m8saq3_id" {
+						local type word
+					}
+					if "`v'" == "m8sbq1_number_sense" {
+						local type number
+					}
+					
+					*for the complicated cases, for each student compare student responses with a variable with the school level answers
+					forvalues i = 1/9 {
+						*the ones matching with the list
+						replace score_`type'_`i' = 1 if `v'__`i' == 1 & regexm(`type'_complicated_list, "`i'") & school_`type'_complicated == 1
+						replace score_`type'_`i' = 1 if `v'__`i' == 0 & !regexm(`type'_complicated_list, "`i'")  &  school_`type'_complicated == 1
+						*the ones not matching with the list 
+						replace score_`type'_`i' = 0 if `v'__`i' == 0 & regexm(`type'_complicated_list, "`i'")  &  school_`type'_complicated == 1
+						replace score_`type'_`i' = 0 if `v'__`i' == 1 & !regexm(`type'_complicated_list, "`i'")  &  school_`type'_complicated == 1
+					}
+					
+					*now get the final scoring
+					gen score_`type'_final = 0 if `v'__99 == 1 // if no response is given 
+					
+					egen score_`type'_total = rowtotal(score_`type'_1 score_`type'_2 score_`type'_3 score_`type'_4 score_`type'_5 score_`type'_6 score_`type'_7 score_`type'_8 score_`type'_9), missing
+					
+					replace score_`type'_final = (score_`type'_total-6)/3 if score_`type'_final == .
+					
+					*finally, replace those below 0 as 0 
+					replace score_`type'_final = 0 if score_`type'_final < 0 & !missing(score_`type'_final)
+					
+				}
+				
+				rename score_letter_final m8saq2_id 
+				rename score_word_final m8saq3_id 
+				rename score_number_final m8sbq1_number_sense
+					
+				keep school_code fourth_grade_assessment__id m8saq2_id m8saq3_id m8sbq1_number_sense
+				
+				tempfile scored
+				save `scored'
+	}
+	
+use `complete', clear
+merge 1:1 school_code fourth_grade_assessment__id using `scored'
 
 * Recode m8saq4_id to be itself divided by 4 if not equal to 99, otherwise 0
 replace m8saq4_id = m8saq4_id / 4 if m8saq4_id != 99
@@ -544,16 +791,6 @@ replace m8saq4_id = 0 if m8saq4_id == 99
 
 * Recode m8saq7_word_choice using bin_var function
 bin_var m8saq7_word_choice 2
-
-* Recode m8sbq1_number_sense to be itself minus 7 divided by 3
-egen m8sbq1_number_sense = rowtotal(m8sbq1_number_sense*) , missing
-replace m8sbq1_number_sense = (m8sbq1_number_sense - 7) / 3
-
-* Recode m8sbq1_number_sense to be 0 if less than 0, otherwise keep the same
-replace m8sbq1_number_sense = 0 if m8sbq1_number_sense < 0
-
-* Recode m8sbq1_number_sense to be 1 if greater than 1, otherwise keep the same
-replace m8sbq1_number_sense = 1 if m8sbq1_number_sense > 1
 
 * Drop variables starting with "m8saq2_id__", "m8saq3_id__", "m8sbq1_number_sense__"
 ds m8saq2_id__* m8saq3_id__* m8sbq1_number_sense__*
@@ -573,7 +810,6 @@ gen student_knowledge=(math_student_knowledge+literacy_student_knowledge)/2
 gen student_proficient=100*(student_knowledge>=82.9) if !missing(student_knowledge)
 gen literacy_student_proficient= 100*(literacy_student_knowledge>=83.3) if !missing(literacy_student_knowledge)
 gen math_student_proficient= 100*(math_student_knowledge>=82) if !missing(math_student_knowledge)
-
 
 svyset school_code, strata(strata) singleunit(scaled) weight(school_weight)   || fourth_grade_assessment__id, weight(g4_stud_weight)
 foreach var in student_knowledge student_proficient {
