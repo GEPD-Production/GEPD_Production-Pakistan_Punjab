@@ -369,7 +369,7 @@ expert_dta_learners_final <- expert_dta_learners_final %>%
          healthcare_young_children=read_var(D7),
          deworming=read_var(D8),
          antenatal_skilled_delivery=read_var(D9)) %>%
-  mutate(health_programs=1+4/3*(immunization + healthcare_young_children + (1/3)*antenatal_skilled_delivery))
+  mutate(health_programs=1+(immunization + healthcare_young_children + deworming + 1/3*antenatal_skilled_delivery))
 
 
 #ECE programs

@@ -843,6 +843,7 @@ frame change first_grade_assessment
  rename   m6s2q6a_name_writing m6s2q6a_nm_writing
  rename   m6s2q6b_name_writing m6s2q6b_nm_writing_response
 
+ 
 * Recode variables ending with specified suffixes using bin_var function
 foreach suffix in comprehension letters words sentence nm_writing print produce_set number_ident number_compare simple_add backward_digit perspective conflict_resol {
     ds *`suffix'
