@@ -1229,7 +1229,7 @@ indicators <- list(
   c("SE.PRM.SEVL.1", "principal_monitor_law", "policy_survey", "NA", "NA"), # (De Jure) Is there a policy that specifies the need to monitor principal or head teacher performance?
   c("SE.PRM.SEVL.2", "principal_monitor_criteria", "policy_survey", "NA", "NA"), # (De Jure) Is the criteria to evaluate principals clear and includes multiple factors?
   c("SE.PRM.SEVL.3 ", " 100*m7sgq8_sevl		", "school", "SEVL", "All"), # (De Facto) Percent of principals that report having been evaluated  during the last school year
-  c("SE.PRM.SEVL.4 ", " 100*principal_eval_tot>1		", "school", "SEVL", "All"), # (De Facto) Percent of principals that report having been evaluated on multiple factors
+  c("SE.PRM.SEVL.4 ", " 100*principal_evaluation_mult_dummy		", "school", "SEVL", "All"), # (De Facto) Percent of principals that report having been evaluated on multiple factors
   c("SE.PRM.SEVL.5 ", " 100*principal_negative_consequences	", "school", "SEVL", "All"), # (De Facto) Percent of principals that report there would be consequences after two negative evaluations
   c("SE.PRM.SEVL.6 ", " 100*principal_positive_consequences	", "school", "SEVL", "All"), # (De Facto) Percent of principals that report there would be consequences after two positive evaluations
   c("SE.PRM.SEVL.DF", "  principal_evaluation		", "school", "SEVL", "All"), # (De Facto) Policy Lever (School Management) - Evaluation

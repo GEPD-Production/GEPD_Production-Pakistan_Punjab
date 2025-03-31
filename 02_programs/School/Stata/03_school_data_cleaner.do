@@ -2105,6 +2105,12 @@ replace principal_evaluation_multiple = 0.666667 if m7sgq8_sevl==1 & principal_e
 replace principal_evaluation_multiple = 0.3333333 if m7sgq8_sevl==1 & principal_eval_tot==1
 replace principal_evaluation_multiple = 0 if m7sgq8_sevl==0 
 
+X:
+
+gen principal_evaluation_mult_dummy = 1 if m7sgq8_sevl == 1 & principal_eval_tot>=2 & !missing(principal_eval_tot) & !missing(m7sgq8_sevl)
+ replace principal_evaluation_mult_dummy = 0 if m7sgq8_sevl == 1 & principal_eval_tot <= 1 & !missing(principal_eval_tot)
+ replace principal_evaluation_mult_dummy = 0 if m7sgq8_sevl == 0 & !missing(m7sgq8_sevl)
+
 gen principal_negative_consequences = (m7sgq11_sevl__1==1 | m7sgq11_sevl__2==1 | m7sgq11_sevl__3==1 | m7sgq11_sevl__4==1 | m7sgq11_sevl__97==1)
 gen principal_positive_consequences = (m7sgq12_sevl__1==1 | m7sgq12_sevl__2==1 | m7sgq12_sevl__3==1 | m7sgq12_sevl__4==1 | m7sgq12_sevl__97==1)
 
