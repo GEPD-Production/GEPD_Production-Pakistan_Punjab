@@ -1127,10 +1127,12 @@ gen discussed_observation = 1 if classroom_observed==1 & m3sdq19_ildr==1 & m3sdq
 replace discussed_observation = 0 if !(classroom_observed==1 & m3sdq19_ildr==1 & m3sdq20_ildr>=2)
 replace discussed_observation=. if missing(classroom_observed) 
 
-gen feedback_observation = 1 if (m3sdq21_ildr==1 & (m3sdq22_ildr__1==1 | m3sdq22_ildr__2==1 | m3sdq22_ildr__3==1 | m3sdq22_ildr__4==1 | m3sdq22_ildr__5==1))
-replace feedback_observation = 0 if !(m3sdq21_ildr==1 & (m3sdq22_ildr__1==1 | m3sdq22_ildr__2==1 | m3sdq22_ildr__3==1 | m3sdq22_ildr__4==1 | m3sdq22_ildr__5==1))
-replace feedback_observation=. if missing(m3sdq21_ildr) & (missing(m3sdq22_ildr__1) & missing(m3sdq22_ildr__2) & missing(m3sdq22_ildr__3) & missing(m3sdq22_ildr__4) & missing(m3sdq22_ildr__5))
+
+gen feedback_observation = 1 if (m3sdq21_ildr==1)
+ replace feedback_observation = 0 if !(m3sdq21_ildr==1)
+ replace feedback_observation=. if missing(m3sdq21_ildr)
 replace feedback_observation = 0 if !(m3sdq15_ildr==1 & m3sdq19_ildr==1) //fix an issue where teachers that never had classroom observed arent asked this question.
+replace feedback_observation=. if missing(m3sdq15_ildr) & missing(m3sdq19_ildr)
 
 gen lesson_plan = 1 if m3sdq23_ildr==1
 replace lesson_plan = 0 if m3sdq23_ildr!=1 
@@ -1139,10 +1141,6 @@ replace lesson_plan = . if missing(m3sdq23_ildr)
 gen lesson_plan_w_feedback = 1 if m3sdq23_ildr==1 & m3sdq24_ildr==1
 replace lesson_plan_w_feedback = 0 if !(m3sdq23_ildr==1 & m3sdq24_ildr==1)
 replace lesson_plan_w_feedback =. if missing(m3sdq23_ildr) & missing(m3sdq24_ildr)
-
-replace feedback_observation = feedback_observation if m3sdq15_ildr==1 & m3sdq19_ildr==1
-replace feedback_observation = 0 if !(m3sdq15_ildr==1 & m3sdq19_ildr==1)
-replace feedback_observation=. if missing(m3sdq15_ildr) & missing(m3sdq19_ildr)
 
 gen instructional_leadership = 1+0.5*classroom_observed + 0.5*classroom_observed_recent + discussed_observation + feedback_observation + lesson_plan_w_feedback
 replace instructional_leadership= (1.5 + lesson_plan_w_feedback) if classroom_observed!=1 & !missing(classroom_observed)
