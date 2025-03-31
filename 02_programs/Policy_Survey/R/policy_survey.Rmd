@@ -28,7 +28,7 @@ library(modelsummary)
 library(flextable)
 #Country name
 country <-'PAK'
-country_name <- "Pakistan-Punjab"
+country_name <- "Pakistan_Punjab"
 year <- '2023'
 
 
@@ -43,6 +43,15 @@ dir <- here()
 data_dir <- here('01_GEPD_raw_data/')
 processed_dir <- here('03_GEPD_processed_data/')
 expert_dir <- here('01_GEPD_raw_data','Policy_survey')
+
+if  (str_to_lower(Sys.getenv("USERNAME")) == "wb631589" ){
+   #project_folder  <- "//wbgfscifs01/GEDEDU/datalib-edu/projects/gepd"
+    project_folder  <- "C:/Users/wb631589/OneDrive - WBG/GEPD-Confidential/General/Country_Data"
+   data_dir  <- "C:/Users/wb631589/OneDrive - WBG/GEPD-Confidential/General/Country_Data/GEPD_Production-Pakistan_Punjab/01_GEPD_raw_data/"
+   expert_dir <-file.path(paste(project_folder,"GEPD_Production-Pakistan_Punjab/01_GEPD_raw_data/Policy_Survey/", sep="/"))
+   processed_dir <-file.path(paste(project_folder,"GEPD_Production-Pakistan_Punjab/03_GEPD_processed_data/", sep="/"))
+}
+
 ```
 
 
