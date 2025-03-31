@@ -1572,16 +1572,18 @@ frame change teachers
 
 gen teacher_satisfied_job = . if m3seq1_tatt==99
 replace teacher_satisfied_job= 5 if m3seq1_tatt==1
-replace teacher_satisfied_job= 3.67 if m3seq1_tatt==2
-replace teacher_satisfied_job= 2.33 if m3seq1_tatt==3
-replace teacher_satisfied_job= 1 if m3seq1_tatt==4
+replace teacher_satisfied_job= 4 if m3seq1_tatt==2
+replace teacher_satisfied_job= 3 if m3seq1_tatt==3
+replace teacher_satisfied_job= 2 if m3seq1_tatt==4
+replace teacher_satisfied_job= 1 if m3seq1_tatt==5
 replace teacher_satisfied_job= teacher_satisfied_job/5
 
 gen teacher_satisfied_status = . if m3seq2_tatt==99
 replace teacher_satisfied_status= 5 if m3seq2_tatt==1
-replace teacher_satisfied_status= 3.67 if m3seq2_tatt==2
-replace teacher_satisfied_status= 2.33 if m3seq2_tatt==3
-replace teacher_satisfied_status= 1 if m3seq2_tatt==4
+replace teacher_satisfied_status= 4 if m3seq2_tatt==2
+replace teacher_satisfied_status= 3 if m3seq2_tatt==3
+replace teacher_satisfied_status= 2 if m3seq2_tatt==4
+replace teacher_satisfied_status= 1 if m3seq2_tatt==5
 replace teacher_satisfied_status= teacher_satisfied_status/5
 
 gen better_teachers_promoted = 1 if m3seq3_tatt==1
@@ -1993,9 +1995,10 @@ frame change school
 
 gen principal_satisfaction = . if m7shq1_satt==99
 replace principal_satisfaction = 5 if m7shq1_satt==1
-replace principal_satisfaction = 3.67 if m7shq1_satt==2
-replace principal_satisfaction = 2.33 if m7shq1_satt==3
-replace principal_satisfaction = 1 if m7shq1_satt==4
+replace principal_satisfaction = 4 if m7shq1_satt == 2
+replace principal_satisfaction = 3 if m7shq1_satt == 3
+replace principal_satisfaction = 2 if m7shq1_satt == 4
+replace principal_satisfaction = 1 if m7shq1_satt == 5
 
 replace m7shq2_satt=. if m7shq2_satt<0
 replace m7shq2_satt=. if m7shq2_satt==999
