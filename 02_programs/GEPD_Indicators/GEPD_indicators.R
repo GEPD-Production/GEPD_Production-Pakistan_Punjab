@@ -806,11 +806,11 @@ indicators <- list(
   c("SE.PRM.ILDR.3.R ", "100*classroom_observed_recent", "teacher_questionnaire", "ILDR", "Rural"),
   c("SE.PRM.ILDR.3.U ", "100*classroom_observed_recent", "teacher_questionnaire", "ILDR", "Urban"),
   # (De Facto) Perc,ent of teachers reporting having discussed the results of the classroom observation
-  c("SE.PRM.ILDR.4   ", "100*if_else(classroom_observed==1 & m3sdq19_ildr==1,1,0)", "teacher_questionnaire", "ILDR", "All"),
-  c("SE.PRM.ILDR.4.F ", "100*if_else(classroom_observed==1 & m3sdq19_ildr==1,1,0)", "teacher_questionnaire", "ILDR", "Female"),
-  c("SE.PRM.ILDR.4.M ", "100*if_else(classroom_observed==1 & m3sdq19_ildr==1,1,0)", "teacher_questionnaire", "ILDR", "Male"),
-  c("SE.PRM.ILDR.4.R ", "100*if_else(classroom_observed==1 & m3sdq19_ildr==1,1,0)", "teacher_questionnaire", "ILDR", "Rural"),
-  c("SE.PRM.ILDR.4.U ", "100*if_else(classroom_observed==1 & m3sdq19_ildr==1,1,0)", "teacher_questionnaire", "ILDR", "Urban"),
+  c("SE.PRM.ILDR.4   ", "100*discussed_observation", "teacher_questionnaire", "ILDR", "All"),
+  c("SE.PRM.ILDR.4.F ", "100*discussed_observation", "teacher_questionnaire", "ILDR", "Female"),
+  c("SE.PRM.ILDR.4.M ", "100*discussed_observation", "teacher_questionnaire", "ILDR", "Male"),
+  c("SE.PRM.ILDR.4.R ", "100*discussed_observation", "teacher_questionnaire", "ILDR", "Rural"),
+  c("SE.PRM.ILDR.4.U ", "100*discussed_observation", "teacher_questionnaire", "ILDR", "Urban"),
   # (De Facto) Perc,ent of teachers reporting that the discussion was over 30 minutes
   c("SE.PRM.ILDR.5   ", "100*if_else((classroom_observed==1 & m3sdq19_ildr==1 & m3sdq20_ildr==3),1,0)", "teacher_questionnaire", "ILDR", "All"),
   c("SE.PRM.ILDR.5.F ", "100*if_else((classroom_observed==1 & m3sdq19_ildr==1 & m3sdq20_ildr==3),1,0)", "teacher_questionnaire", "ILDR", "Female"),
