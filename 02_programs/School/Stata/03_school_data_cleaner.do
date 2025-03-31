@@ -114,38 +114,42 @@ frame change school
 *Percent of 4th grade students who are present during an unannounced visit.
 
 gen student_attendance=m4scq4_inpt/m4scq12_inpt
-*fix an issue where sometimes enumerators will get these two questions mixed up.
-replace student_attendance=m4scq12_inpt/m4scq4_inpt if m4scq4_inpt>m4scq12_inpt & !missing(student_attendance)
-replace student_attendance=1 if student_attendance>1 & !missing(student_attendance)
+assert (student_attendance >= 0 & student_attendance <= 1) | missing(student_attendance) // making sure this value is within expected boundaries (should always be the case (at least in new implementaations) since there is a validation condition for this in SS)
 replace student_attendance=100*student_attendance
-
 
 svyset school_code [pw=school_weight], strata(strata) singleunit(scaled) 
 svy: mean student_attendance
 
-*Boys attendance
-gen boys_num_attending = (m4scq4_inpt-m4scq4n_girls)
-gen boys_on_list = (m4scq12_inpt-m4scq13_girls)
-gen student_attendance_male = boys_num_attending/boys_on_list
-*fix an issue where sometimes enumerators will get these two questions mixed up.
-replace student_attendance_male=0 if student_attendance_male<0  & !missing(student_attendance_male)
-replace student_attendance_male=1 if (student_attendance_male>1 & !missing(student_attendance_male)) | (boys_on_list==0 & boys_num_attending>boys_on_list)
-replace student_attendance_male=100*student_attendance_male
-
-
-svyset school_code [pw=school_weight], strata(strata) singleunit(scaled) 
-svy: mean student_attendance_male
-
 *Girls attendance
-gen student_attendance_female = m4scq4n_girls/m4scq13_girls
-*fix an issue where sometimes enumerators will get these two questions mixed up.
-replace student_attendance_female=1 if student_attendance_female>1 & !missing(student_attendance_female)
-replace student_attendance_female=100*student_attendance_female
+ replace m4scq13_girls = . if m4scq13_girls == 98 // replace do not know as missing
 
-svyset school_code [pw=school_weight], strata(strata) singleunit(scaled) 
-svy: mean student_attendance_female
+ gen girls_num_attending = (m4scq4_inpt-m4scq4n_girls)
+ gen girls_on_list = (m4scq12_inpt-m4scq13_girls) 
+ 
+ replace girls_on_list = (m4scq4_inpt-m4scq4n_girls) if (m4scq4_inpt-m4scq4n_girls) > (m4scq12_inpt-m4scq13_girls) & !missing(girls_num_attending) & !missing(girls_on_list)
+ replace girls_num_attending = (m4scq12_inpt-m4scq13_girls) if (m4scq12_inpt-m4scq13_girls) < (m4scq4_inpt-m4scq4n_girls) & !missing(girls_num_attending) & !missing(girls_on_list)
+ 
+gen student_attendance_female = girls_num_attending/girls_on_list
 
+*one school where it is unclear what to do, set the attendance to missing there 
+replace student_attendance_female = . if school_code == 32310149
 
+ assert (student_attendance_female >= 0 & student_attendance_female <= 1) | missing(student_attendance_female) // making sure this is indeed correct
+ 
+ replace student_attendance_female=100*student_attendance_female
+ 
+*Boys attendance
+ gen student_attendance_male = m4scq4n_girls/m4scq13_girls
+ 
+  replace student_attendance_male = m4scq13_girls/m4scq4n_girls if m4scq13_girls < m4scq4n_girls & !missing(m4scq13_girls) & !missing(m4scq4n_girls) 
+ 
+ assert (student_attendance_male >= 0 & student_attendance_male <= 1) | missing(student_attendance_male) // making sure this is indeed correct
+ 
+ *one school where it is unclear what to do, set the attendance to missing there 
+replace student_attendance_male = . if school_code == 32310149
+ 
+ replace student_attendance_male=100*student_attendance_male
+ 
 **********************************************************
 * Teacher Content Knowledge
 **********************************************************
