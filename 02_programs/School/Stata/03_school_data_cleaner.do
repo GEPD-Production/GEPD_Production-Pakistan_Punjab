@@ -1541,11 +1541,13 @@ replace problem_solving_proactive = 0 if (m7seq1_pman==1 | m7seq1_pman==98)
 replace problem_solving_proactive = 0 if ((!inlist(m7seq1_pman,1,2,3,4,98)) | missing(m7seq1_pman))
 
 gen problem_solving_info_collect = (m7seq2_pman__1+m7seq2_pman__2 + m7seq2_pman__3 + m7seq2_pman__4)/4
+
+
 *Error: Corrected but check
 gen problem_solving_stomach = 1 if m7seq3_pman==4 
 replace problem_solving_stomach = 0.5 if m7seq3_pman==3
-replace problem_solving_stomach = 0.25 if (m7seq3_pman==1 | m7seq3_pman==2 | m7seq3_pman==98)
-replace problem_solving_stomach = 0 if ((!inlist(m7seq3_pman,1,2,3,4,98)) | missing(m7seq3_pman))
+replace problem_solving_stomach = 0.25 if (m7seq3_pman==1 | m7seq3_pman==2 | m7seq3_pman==97)
+ replace problem_solving_stomach = 0 if ((!inlist(m7seq3_pman,1,2,3,4,97)) | missing(m7seq3_pman))
 
 gen problem_solving=1+(4/3)*problem_solving_proactive+(4/3)*problem_solving_info_collect+(4/3)*problem_solving_stomach
 gen principal_management = (goal_setting+problem_solving)/2
@@ -2104,8 +2106,6 @@ gen principal_evaluation_multiple = 1 if m7sgq8_sevl==1 & principal_eval_tot>=5 
 replace principal_evaluation_multiple = 0.666667 if m7sgq8_sevl==1 & principal_eval_tot>1 & principal_eval_tot<5 & !missing(principal_eval_tot)
 replace principal_evaluation_multiple = 0.3333333 if m7sgq8_sevl==1 & principal_eval_tot==1
 replace principal_evaluation_multiple = 0 if m7sgq8_sevl==0 
-
-X:
 
 gen principal_evaluation_mult_dummy = 1 if m7sgq8_sevl == 1 & principal_eval_tot>=2 & !missing(principal_eval_tot) & !missing(m7sgq8_sevl)
  replace principal_evaluation_mult_dummy = 0 if m7sgq8_sevl == 1 & principal_eval_tot <= 1 & !missing(principal_eval_tot)
