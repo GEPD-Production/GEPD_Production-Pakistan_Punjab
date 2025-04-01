@@ -197,6 +197,7 @@ egen teacher_abs_count=count(m2sbq6_efft), by(school_code)
 gen teacher_abs_weight=numEligible/teacher_abs_count
 replace teacher_abs_weight=1 if missing(teacher_abs_weight) //fix issues where no g1 teachers listed. Can happen in very small schools
 
+/*
 *teacher questionnaire weights
 *get number of teachers checked for absense
 egen teacher_quest_count=count(m3s0q1), by(school_code)
@@ -211,6 +212,83 @@ replace teacher_content_weight=1 if missing(teacher_content_weight) //fix issues
 
 *teacher pedagogy weights
 gen teacher_pedagogy_weight=numEligible4th/1 // one teacher selected
+replace teacher_pedagogy_weight=1 if missing(teacher_pedagogy_weight) //fix issues where no g1 teachers listed. Can happen in very small schools
+*/
+
+*get number of teachers (at school) who completed the questionnaire
+egen teacher_quest_count=count(m3s0q1) if m3s0q1 == 1, by(school_code) // participated in the questionnaire
+
+*make sure we have this on on the school level
+bysort school_code: egen max_teacher_quest_count = max(teacher_quest_count)
+replace max_teacher_quest_count = 0 if max_teacher_quest_count == .
+replace teacher_quest_count = max_teacher_quest_count
+
+egen teacher_selected =count(m3s0q1), by(school_code) // selected for the questionnaire (in the ideal world this should be selected for both, but given the issues in CAR with the manual entry of the  questionnaire, we need to adjust this one for the assessment)
+
+*recreate numEligible4th for the cases when it is empty
+egen eligible = rowmax(m2saq7__1 m2saq7__2 m2saq7__3 m2saq7__4 m2saq7__5 m2saq7__6 m2saq7__7)
+replace eligible = 0 if m2saq8__97 == 1 
+replace eligible = 0 if !inlist(teacher_available, 1, 90) & !missing(teacher_available)
+replace eligible = 0  if m2saq6 == 2
+replace eligible = 0 if m2saq5 == 4
+
+bysort school_code: egen numEligible4th_manual = sum(eligible)
+
+gen teacher_questionnaire_weight=(numEligible4th_manual/teacher_selected)*(teacher_selected/teacher_quest_count)
+
+replace teacher_questionnaire_weight=1 if missing(teacher_questionnaire_weight) //fix issues where no g1 teachers listed. Can happen in very small schools
+
+
+*teacher content knowledge weights
+*recreate numEligible4th for the cases when it is empty (just do it once again given the adjustments that were made for the questionnaire)
+drop eligible numEligible4th_manual
+
+egen eligible = rowmax(m2saq7__1 m2saq7__2 m2saq7__3 m2saq7__4 m2saq7__5 m2saq7__6 m2saq7__7)
+replace eligible = 0 if m2saq8__97 == 1 
+replace eligible = 0 if !inlist(teacher_available, 1, 90) & !missing(teacher_available)
+replace eligible = 0  if m2saq6 == 2
+replace eligible = 0 if m2saq5 == 4
+
+replace eligible = 1 if eligible != 1 & typetest != . // to include the teachers that were never supposed to be assessed but were assessed regardless
+
+bysort school_code: egen numEligible4th_manual = sum(eligible)
+
+*since we do not have a consent variable, what we want to do here is to assume that the consent variable from the questionnaire applies to this one as well, excluding the cases where the teachers were not eligible but that submitted the questionnaire regardless
+egen teacher_content_count=count(typetest), by(school_code) // participated in the test
+
+bysort school_code: egen max_teacher_content_count = max(teacher_content_count)
+replace max_teacher_content_count = 0 if max_teacher_content_count == .
+replace teacher_content_count = max_teacher_content_count
+
+*construct selected teachers 
+egen teacher_selected_content =count(m3s0q1), by(school_code) // selected for the questionnaire 
+
+replace teacher_selected_content = teacher_content_count if teacher_selected_content == 0 & teacher_content_count != 0
+
+gen teacher_content_weight=(numEligible4th_manual/teacher_selected_content)*(teacher_selected_content/teacher_content_count)
+
+replace teacher_content_weight=1 if missing(teacher_content_weight) //fix issues where no g1 teachers listed. Can happen in very small schools
+
+*teacher pedagogy weights
+*reconstuct eligibility again. for the number of eligible teachers, I use the number of 4th grade teachers that teach either math or language. For now, part-time and volunteer teachers are a part of the calculation
+
+drop eligible numEligible4th_manual
+
+egen eligible = rowmax(m2saq7__4)
+replace eligible = 0 if m2saq8__97 == 1 // teaching other subjects
+*replace eligible = 0 if !inlist(teacher_available, 1, 90) & !missing(teacher_available)
+*replace eligible = 0  if m2saq6 == 2
+*replace eligible = 0 if m2saq5 == 4
+replace eligible = 1 if eligible == 0 & s1_0_1_1 != .
+
+bysort school_code: egen numEligible4th_manual = sum(eligible)
+
+*confirm that there is only one teacher per school that was observed
+gen observed = 1 if  s1_0_1_1 != .
+bysort school_code: egen total_observed = sum(observed)
+
+*correct for the cases where the observed teacher is the one 
+gen teacher_pedagogy_weight=numEligible4th_manual/1 // one teacher selected
 replace teacher_pedagogy_weight=1 if missing(teacher_pedagogy_weight) //fix issues where no g1 teachers listed. Can happen in very small schools
 
 drop if missing(school_weight)
