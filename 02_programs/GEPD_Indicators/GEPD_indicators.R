@@ -1371,8 +1371,11 @@ indicator_data <- left_join(GEPD_template, indicator_data) %>%
   )
 
 # save as csv
+if  (str_to_lower(Sys.getenv("USERNAME")) == "wb631589" ){
+  write_excel_csv(indicator_data, paste0(here, "/04_GEPD_Indicators/", paste0(country, "_GEPD_Indicators_", software, ".csv")))
+} else {
 write_excel_csv(indicator_data, here("04_GEPD_Indicators", paste0(country, "_GEPD_Indicators_", software, ".csv")))
-
+}
 
 # write to an xlsx named GEPD_indicators.xlsx
 # save one tab with all endicators in this list
